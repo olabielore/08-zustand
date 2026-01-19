@@ -1,16 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { useQuery, keepPreviousData, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchNotes, deleteNote } from "@/lib/api";
 import type { FetchNotesResponse } from "@/lib/api";
+import Link from "next/link";
 
 import Pagination from "@/components/Pagination/Pagination";
 import NoteList from "@/components/NoteList/NoteList";
-import Modal from "@/components/Modal/Modal";
-import NoteForm from "@/components/NoteForm/NoteForm";
 import SearchBox from "@/components/SearchBox/SearchBox";
 
 import css from "./NotesPage.module.css";
@@ -20,7 +18,6 @@ interface NotesClientProps {
 }
 
 export default function NotesClient({ tag }: NotesClientProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
 
@@ -67,24 +64,14 @@ export default function NotesClient({ tag }: NotesClientProps) {
             onPageChange={setPage}
           />
 
-        <button
-          className={css.button}
-          onClick={() => setIsModalOpen(true)}
-        >
-          Create note +
-        </button>
+        <Link href="/notes/action/create" className={css.createButton}>Create note +</Link>
+        
       </header>
 
           <NoteList
             notes={data.notes}
             onDelete={(id) => deleteMutation.mutate(id)}
         />
-
-      {isModalOpen && (
-        <Modal onClose={() => setIsModalOpen(false)}>
-            <NoteForm setIsModalOpen={setIsModalOpen} />
-        </Modal>
-      )}
     </div>
   );
 }
