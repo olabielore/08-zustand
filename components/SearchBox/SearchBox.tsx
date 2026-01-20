@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from "next/navigation";
 import css from "../SearchBox/SearchBox.module.css";
 
 interface SearchBoxProps {
@@ -8,12 +7,11 @@ interface SearchBoxProps {
     onChange: (value: string) => void; 
 }
 
-export default function SearchBox({ value }: SearchBoxProps) {
-    const router = useRouter();
+export default function SearchBox({ value, onChange }: SearchBoxProps) {
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const search = event.target.value;
-        router.push(`/notes/filter/all/${search}`);
+        onChange(search)
     };
     
     return (
@@ -26,6 +24,3 @@ export default function SearchBox({ value }: SearchBoxProps) {
         />
     );
 };
-
-
-

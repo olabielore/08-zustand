@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, keepPreviousData, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
-import { fetchNotes, deleteNote } from "@/lib/api";
+import { fetchNotes } from "@/lib/api";
 import type { FetchNotesResponse } from "@/lib/api";
 import Link from "next/link";
 
@@ -36,15 +36,6 @@ export default function NotesClient({ tag }: NotesClientProps) {
       placeholderData: keepPreviousData,
   });
 
-  const queryClient = useQueryClient();
-
-  const deleteMutation = useMutation({
-    mutationFn: deleteNote,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-    },
-  });
-  
   const handleSearchChange = (tag: string) => {
     setSearch(tag);
     setPage(1); 
@@ -68,10 +59,12 @@ export default function NotesClient({ tag }: NotesClientProps) {
         
       </header>
 
+      {data.notes.length > 0 ? (
           <NoteList
-            notes={data.notes}
-            onDelete={(id) => deleteMutation.mutate(id)}
-        />
+          notes={data.notes}/>
+        ) : (
+          <p>No notes found</p>
+        )}
     </div>
   );
 }
